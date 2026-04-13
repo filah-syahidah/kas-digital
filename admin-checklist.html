@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uang Kas Digital - Admin Checklist</title>
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+    <link rel="shortcut icon" href="images/favicon.png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: "#eef7ff",
+                            100: "#d7ecff",
+                            200: "#add8ff",
+                            500: "#0f5fa8",
+                            600: "#0d4f8c",
+                            700: "#0a3f71"
+                        },
+                        accent: {
+                            500: "#0f8b7b",
+                            600: "#0d7568"
+                        }
+                    },
+                    boxShadow: {
+                        soft: "0 12px 35px rgba(13, 79, 140, 0.12)"
+                    }
+                }
+            }
+        };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        body { font-family: "Plus Jakarta Sans", sans-serif; }
+    </style>
+    <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+    <div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_right,_rgba(173,216,255,0.35),_transparent_34%),radial-gradient(circle_at_bottom_left,_rgba(15,139,123,0.22),_transparent_34%)]"></div>
+
+    <header class="sticky top-0 z-40 border-b border-slate-200/80 bg-white/85 backdrop-blur">
+        <div class="mx-auto flex w-[min(1150px,94vw)] flex-wrap items-center justify-between gap-2 py-3">
+            <h1>
+                <img src="images/logok.png" alt="KasKelas" class="h-12 w-auto object-contain" />
+            </h1>
+            <button id="mobileMenuBtn" type="button" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 md:hidden" aria-controls="mainNav" aria-expanded="false" aria-label="Buka menu navigasi">
+                <span class="sr-only">Menu</span>
+                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+                </svg>
+            </button>
+            <nav id="mainNav" class="hidden w-full flex-col gap-2 pt-2 md:flex md:w-auto md:flex-row md:items-center md:justify-end md:pt-0">
+                <a class="inline-flex rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700" href="admin.html">Dashboard</a>
+                <a class="inline-flex rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700" href="admin-transaksi.html">Transaksi</a>
+                <a class="inline-flex rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-700" href="admin-checklist.html">Checklist Murid</a>
+                <a class="inline-flex rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700" href="admin-peraturan.html">Peraturan</a>
+                <a class="inline-flex rounded-xl bg-brand-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-700" href="index.html">Halaman User</a>
+                <button id="btnLogout" class="inline-flex rounded-xl bg-rose-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-rose-700" type="button">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto grid w-[min(1150px,94vw)] gap-5 py-6">
+        <section class="rounded-3xl bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 p-6 text-white shadow-soft" id="dashboardAdmin">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-white/80">Dashboard Bendahara</p>
+            <h2 class="mt-2 text-2xl font-extrabold md:text-3xl">Kelola Data Kas Kelas</h2>
+            <p class="mt-1 text-sm text-white/85">Tambah, edit, dan hapus transaksi serta checklist kas bulanan secara realtime.</p>
+        </section>
+
+        <section class="grid gap-4 md:grid-cols-3" aria-label="Ringkasan kas admin">
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+                <p class="text-sm font-medium text-slate-500">Total Kas</p>
+                <h3 id="totalKas" class="mt-2 text-2xl font-extrabold text-brand-700">Rp 0</h3>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+                <p class="text-sm font-medium text-slate-500">Total Pemasukan</p>
+                <h3 id="totalMasuk" class="mt-2 text-2xl font-extrabold text-emerald-600">Rp 0</h3>
+            </article>
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+                <p class="text-sm font-medium text-slate-500">Total Pengeluaran</p>
+                <h3 id="totalKeluar" class="mt-2 text-2xl font-extrabold text-rose-600">Rp 0</h3>
+            </article>
+        </section>
+
+        <div id="financialAlert" class="hidden rounded-2xl border px-4 py-3 text-sm font-semibold"></div>
+
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft" aria-label="Kesehatan kas admin">
+            <div class="mb-3 flex items-end justify-between gap-4">
+                <h2 class="text-lg font-bold text-slate-800">Kesehatan Kas</h2>
+                <p id="healthPercent" class="text-lg font-extrabold text-brand-700">0%</p>
+            </div>
+            <div class="h-3.5 overflow-hidden rounded-full bg-slate-100" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="healthTrack">
+                <div id="healthFill" class="h-full w-0 rounded-full bg-gradient-to-r from-brand-600 to-accent-500 transition-all duration-300"></div>
+            </div>
+            <p id="healthInfo" class="mt-2 text-sm font-semibold text-slate-500">Belum ada data kas.</p>
+        </section>
+
+        <section class="hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-soft" id="transaksiAdmin">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+                <h2 class="text-lg font-bold text-slate-800">Daftar Transaksi</h2>
+                <p class="text-sm text-slate-500">Data transaksi terbaru secara realtime</p>
+            </div>
+
+            <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex flex-wrap gap-2" role="group" aria-label="Filter jenis transaksi">
+                    <button type="button" class="chip rounded-full border border-brand-600 bg-brand-600 px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-white" data-filter="all">Semua</button>
+                    <button type="button" class="chip rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-600" data-filter="masuk">Masuk</button>
+                    <button type="button" class="chip rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wide text-slate-600" data-filter="keluar">Keluar</button>
+                </div>
+
+                <label class="sr-only" for="searchInput">Cari transaksi</label>
+                <input id="searchInput" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 placeholder:text-slate-400 focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100 md:w-80" type="search" placeholder="Cari keterangan atau tanggal..." />
+            </div>
+
+            <form id="kasForm" class="mb-4 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:grid-cols-4">
+                <input type="hidden" id="editId" />
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="jenis">Jenis</label>
+                    <select id="jenis" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" required>
+                        <option value="masuk">Masuk</option>
+                        <option value="keluar">Keluar</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="jumlah">Jumlah</label>
+                    <input id="jumlah" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="number" min="1" step="1" placeholder="10000" required />
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="keterangan">Keterangan</label>
+                    <input id="keterangan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="text" maxlength="120" placeholder="Contoh: Bayar kas minggu ini" required />
+                </div>
+
+                <div class="md:col-span-4 flex flex-wrap gap-2">
+                    <button id="btnSubmit" type="submit" class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Simpan</button>
+                    <button id="btnCancel" type="button" class="hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300">Batal</button>
+                </div>
+            </form>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-200">
+                <table class="min-w-[880px] w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3">Tanggal</th>
+                            <th class="px-4 py-3">Jenis</th>
+                            <th class="px-4 py-3">Keterangan</th>
+                            <th class="px-4 py-3">Jumlah</th>
+                            <th class="px-4 py-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft" id="checklistBulanan">
+            <div class="mb-4 flex flex-wrap items-end justify-between gap-2">
+                <h2 class="text-lg font-bold text-slate-800">Checklist Kas Bulanan</h2>
+                <p class="text-sm text-slate-500">Nama siswa, bulan, dan status pembayaran kas</p>
+            </div>
+
+            <form id="monthlyForm" class="mb-4 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 md:grid-cols-4">
+                <input type="hidden" id="monthlyEditId" />
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="monthlyNamaSiswa">Nama Siswa</label>
+                    <input id="monthlyNamaSiswa" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="text" maxlength="120" placeholder="Contoh: Aisyah" required />
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="monthlyBulan">Bulan</label>
+                    <input id="monthlyBulan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="month" required />
+                </div>
+
+                <div>
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="monthlyJumlah">Nominal</label>
+                    <input id="monthlyJumlah" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="number" min="1" step="1" placeholder="5000" required />
+                </div>
+
+                <div class="flex items-end">
+                    <label class="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700" for="monthlyStatus">
+                        <input id="monthlyStatus" class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-300" type="checkbox" />
+                        Sudah Bayar
+                    </label>
+                </div>
+
+                <div class="md:col-span-3">
+                    <label class="mb-1 block text-sm font-semibold text-slate-600" for="monthlyKeterangan">Keterangan</label>
+                    <input id="monthlyKeterangan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="text" maxlength="140" placeholder="Contoh: Kas bulan April 2026" />
+                </div>
+
+                <div class="md:col-span-4 flex flex-wrap gap-2">
+                    <button id="monthlySubmitBtn" type="submit" class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Simpan Checklist</button>
+                    <button id="monthlyResetBtn" type="button" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300">Reset</button>
+                    <button id="monthlyResetMonthBtn" type="button" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">Reset Bulan</button>
+                    <button id="monthlyCancelBtn" type="button" class="hidden rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300">Batal</button>
+                </div>
+            </form>
+
+            <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200">
+                <table class="min-w-[980px] w-full text-left text-sm">
+                    <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                        <tr>
+                            <th class="px-4 py-3">Bulan</th>
+                            <th class="px-4 py-3">Nama Siswa</th>
+                            <th class="px-4 py-3">Nominal</th>
+                            <th class="px-4 py-3">Status</th>
+                            <th class="px-4 py-3">Keterangan</th>
+                            <th class="px-4 py-3">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthlyTableBody" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+
+            <div id="monthlySummary" class="mt-3 grid grid-cols-2 gap-2 lg:grid-cols-4"></div>
+        </section>
+    </main>
+
+    <div id="confirmModal" class="fixed inset-0 z-50 grid hidden place-items-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
+            <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Hapus Transaksi?</h3>
+            <p class="mt-1 text-sm text-slate-500">Data yang dihapus tidak bisa dikembalikan.</p>
+            <div class="mt-4 flex justify-end gap-2">
+                <button type="button" id="btnModalCancel" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Batal</button>
+                <button type="button" id="btnModalDelete" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="settingsModal" class="fixed inset-0 z-50 grid hidden place-items-center bg-slate-900/40 p-4" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+        <div class="max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-slate-200 bg-white p-6 shadow-soft">
+            <h3 id="settingsTitle" class="text-lg font-bold text-slate-900">Peraturan Kas Kelas</h3>
+            
+            <form id="rulesForm" class="grid-form">
+                <div class="mt-4 grid gap-3 md:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-600" for="rulesJumlah">Jumlah Iuran (Rp)</label>
+                        <input id="rulesJumlah" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="number" min="0" step="1000" placeholder="Contoh: 5000" required />
+                    </div>
+
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold text-slate-600" for="rulesPeriode">Periode</label>
+                        <select id="rulesPeriode" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" required>
+                            <option value="minggu">Minggu</option>
+                            <option value="bulan">Bulan</option>
+                            <option value="semester">Semester</option>
+                            <option value="tahun">Tahun</option>
+                            <option value="sekali">Sekali Bayar</option>
+                        </select>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="mb-1 block text-sm font-semibold text-slate-600" for="rulesKeterangan">Keterangan</label>
+                        <input id="rulesKeterangan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-brand-400 focus:outline-none focus:ring-4 focus:ring-brand-100" type="text" maxlength="100" placeholder="Contoh: Iuran rutin kelas" required />
+                    </div>
+                </div>
+
+                <div class="mt-3 flex justify-end gap-2">
+                    <button type="submit" id="rulesSubmitBtn" class="rounded-xl bg-brand-600 px-4 py-2 text-sm font-semibold text-white">Tambah Peraturan</button>
+                </div>
+            </form>
+
+            <h4 class="mb-3 mt-6 text-base font-bold text-slate-800">Peraturan Kas yang Ada</h4>
+            <div id="rulesTableList" class="max-h-[320px] space-y-3 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-3">
+            </div>
+
+            <div class="mt-4 flex justify-end">
+                <button type="button" id="btnSettingsCancel" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastArea" class="fixed bottom-4 right-4 z-[60] grid gap-2" aria-live="polite"></div>
+
+    <footer class="mx-auto mt-4 w-[min(1150px,94vw)] pb-8 text-center text-sm text-slate-500">
+        <p>Dibuat oleh Filah Syahidah untuk mempermudah pengelolaan kas kelas</p>
+    </footer>
+
+    <script src="js/ui-nav.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>
